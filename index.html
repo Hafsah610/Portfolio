@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hafsah Sayeedah — Marketing Storyteller</title>
+  <meta name="description" content="Portfolio of Hafsah Sayeedah — a marketer who turns ambiguity into structured action and brands into stories people stop for." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>" />
+</head>
+<body>
+
+  <!-- animated background: color blobs + full-page 3D field -->
+  <div class="bg-blobs" aria-hidden="true">
+    <span class="blob blob--1"></span>
+    <span class="blob blob--2"></span>
+    <span class="blob blob--3"></span>
+    <span class="blob blob--4"></span>
+  </div>
+  <canvas id="webgl" aria-hidden="true"></canvas>
+
+  <!-- texture + chrome -->
+  <div class="grain" aria-hidden="true"></div>
+  <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+  <div class="cursor" aria-hidden="true"></div>
+  <div class="cursor-follower" aria-hidden="true"></div>
+
+  <!-- preloader -->
+  <div class="preloader" id="preloader" aria-hidden="true">
+    <div class="preloader__inner">
+      <p class="preloader__kicker">A story in six chapters</p>
+      <h2 class="preloader__name">Hafsah&nbsp;Sayeedah</h2>
+      <p class="preloader__count"><span id="loadCount">0</span>%</p>
+    </div>
+  </div>
+
+  <!-- fixed chapter indicator -->
+  <aside class="chapter-indicator" aria-hidden="true">
+    <span class="chapter-indicator__dot"></span>
+    <span id="chapterLabel">Prologue</span>
+  </aside>
+
+  <!-- nav -->
+  <header class="nav" id="nav">
+    <a href="#hero" class="nav__logo" data-hover>H<span>✦</span>S</a>
+    <nav class="nav__links">
+      <a href="#about" data-hover>About me</a>
+      <a href="#work" data-hover>My Work</a>
+      <a href="#posts" data-hover>Posts</a>
+      <a href="#rtm" data-hover>RTM Projects</a>
+      <a href="#shelf" data-hover>The Shelf</a>
+      <a href="#hobbies" data-hover>Hobbies</a>
+    </nav>
+    <a href="#contact" class="nav__cta" data-hover>Say hello</a>
+  </header>
+
+  <main id="main">
+
+    <!-- ============ PROLOGUE / HERO ============ -->
+    <section class="hero" id="hero">
+      <div class="hero__content">
+        <p class="hero__kicker" data-reveal>✦ Prologue — portfolio of a marketer in the making</p>
+        <h1 class="hero__title">
+          <span class="hero__line"><span data-split>HAFSAH</span></span>
+          <span class="hero__line hero__line--right"><span data-split>SAYEEDAH</span></span>
+        </h1>
+        <div class="hero__meta">
+          <p class="hero__tag" data-reveal>Marketing <em>×</em> Storytelling <em>×</em> Strategy</p>
+          <p class="hero__blurb" data-reveal>Every brand has a story.<br />I make people stop and listen.</p>
+        </div>
+      </div>
+      <div class="hero__scroll" aria-hidden="true">
+        <span>Scroll to begin the story</span>
+        <span class="hero__scroll-line"></span>
+      </div>
+    </section>
+
+    <!-- marquee -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span>Storytelling ✦ Strategy ✦ Market Research ✦ Brand Building ✦ B2B Sales ✦ Photography ✦ </span>
+        <span>Storytelling ✦ Strategy ✦ Market Research ✦ Brand Building ✦ B2B Sales ✦ Photography ✦ </span>
+      </div>
+    </div>
+
+    <!-- ============ CHAPTER 01 — ABOUT ============ -->
+    <section class="chapter about" id="about" data-chapter="Ch. 01 — About me" data-bg="#FFE1C7" data-b1="#FF7A48" data-b2="#FFC145" data-b3="#6FCF97" data-b4="#FF9BB8">
+      <div class="chapter__head">
+        <span class="chapter__num" data-reveal>Chapter 01</span>
+        <h2 class="chapter__title" data-split-lines>The Storyteller</h2>
+      </div>
+
+      <div class="about__grid">
+        <figure class="about__figure" data-reveal>
+          <div class="about__frame">
+            <img src="assets/hafsah-portrait.jpg" alt="Hafsah Sayeedah smiling on campus" />
+          </div>
+          <figcaption>Golden hour, IMT Hyderabad ✦</figcaption>
+          <span class="about__sticker about__sticker--1">hi, that's me →</span>
+        </figure>
+
+        <div class="about__copy">
+          <p class="about__lead" data-reveal>
+            I'm Hafsah — an MBA marketing candidate at IMT Hyderabad who is
+            <em>happiest in ambiguity</em>, because that's where the best stories start.
+          </p>
+          <p data-reveal>
+            Over 17 months of hands-on experience, I've turned messy, undefined problems into
+            structured action — streamlining stakeholder operations, representing organisations
+            on industry stages, and building systems that people actually use.
+          </p>
+          <p data-reveal>
+            Off the clock I hold a black belt in Isshinryu karate, run marathons, and shoot
+            photographs — which is really just marketing training in disguise: discipline,
+            endurance, and knowing exactly where to point the lens.
+          </p>
+          <div class="about__chips" data-reveal>
+            <span>Brand storytelling</span><span>Market research</span><span>B2B sales</span>
+            <span>Stakeholder ops</span><span>Client lifecycle</span><span>Canva</span>
+            <span>Filmora</span><span>MS Office Suite</span><span>Photography</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="about__stats">
+        <div class="stat" data-reveal>
+          <span class="stat__num"><span data-count="17">0</span></span>
+          <span class="stat__label">months of professional experience</span>
+        </div>
+        <div class="stat" data-reveal>
+          <span class="stat__num"><span data-count="65">0</span>%</span>
+          <span class="stat__label">improvement in outreach clarity at IP DOME</span>
+        </div>
+        <div class="stat" data-reveal>
+          <span class="stat__num"><span data-count="270">0</span>+</span>
+          <span class="stat__label">youth leaders from 80+ countries hosted</span>
+        </div>
+        <div class="stat" data-reveal>
+          <span class="stat__num"><span data-count="1">0</span></span>
+          <span class="stat__label">Guinness World Record (yes, really)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CHAPTER 02 — MY WORK ============ -->
+    <section class="chapter work" id="work" data-chapter="Ch. 02 — My Work" data-bg="#DCEFC9" data-b1="#8FD14F" data-b2="#2BB5A0" data-b3="#FFD25E" data-b4="#FF8C5A">
+      <div class="work__pin">
+        <div class="chapter__head chapter__head--work">
+          <span class="chapter__num">Chapter 02</span>
+          <h2 class="chapter__title">Plot&nbsp;Points</h2>
+          <p class="chapter__sub">Every role taught me a new way to tell the story. Drag through the timeline →</p>
+        </div>
+
+        <div class="work__track" id="workTrack">
+
+          <article class="work-card" style="--accent:#D45B2C">
+            <span class="work-card__index">01</span>
+            <div class="work-card__top">
+              <h3>IP DOME</h3>
+              <p class="work-card__role">Jr. Business Manager</p>
+              <p class="work-card__dates">Nov '23 — Apr '25</p>
+            </div>
+            <ul>
+              <li>Streamlined stakeholder operations by prioritising client segments — outreach clarity up <strong>65%</strong>.</li>
+              <li>Built the firm's external presence: structured documentation, forums &amp; industry events.</li>
+              <li>Created a financial tracking system that improved payment &amp; fee accuracy by <strong>60%</strong>.</li>
+            </ul>
+            <span class="work-card__tag">17 months · Operations × Strategy</span>
+          </article>
+
+          <article class="work-card" style="--accent:#41648C">
+            <span class="work-card__index">02</span>
+            <div class="work-card__top">
+              <h3>AIESEC International</h3>
+              <p class="work-card__role">BD &amp; Delegate Experience Manager</p>
+              <p class="work-card__dates">Sep '22 — Jul '23</p>
+            </div>
+            <ul>
+              <li>Coordinated a <strong>14-day leadership congress</strong> at Infosys, Mysore.</li>
+              <li>Hosted <strong>270+ youth leaders from 80+ countries</strong> — one delegate experience at a time.</li>
+              <li>Owned business development conversations with global partners.</li>
+            </ul>
+            <span class="work-card__tag">Global · Events × Experience</span>
+          </article>
+
+          <article class="work-card" style="--accent:#5A6E3A">
+            <span class="work-card__index">03</span>
+            <div class="work-card__top">
+              <h3>AIESEC India</h3>
+              <p class="work-card__role">Incoming Global Volunteer, GB Member</p>
+              <p class="work-card__dates">Sep '22 — Jul '23</p>
+            </div>
+            <ul>
+              <li>Managed international delegate onboarding across multiple countries.</li>
+              <li>Nurtured partner relationships end-to-end.</li>
+              <li>Designed &amp; executed <strong>city promotion campaigns</strong> targeting international volunteers.</li>
+            </ul>
+            <span class="work-card__tag">Campaigns × Partnerships</span>
+          </article>
+
+          <article class="work-card" style="--accent:#C79A2E">
+            <span class="work-card__index">04</span>
+            <div class="work-card__top">
+              <h3>Media Relations Committee</h3>
+              <p class="work-card__role">Committee Head · IMT Hyderabad</p>
+              <p class="work-card__dates">Jul '25 — Present</p>
+            </div>
+            <ul>
+              <li>Leading the committee that shapes how the campus speaks to the world.</li>
+              <li>Member of the <strong>Photography &amp; Blog</strong> team — stories in pixels and prose.</li>
+            </ul>
+            <span class="work-card__tag">Media × Narrative</span>
+          </article>
+
+          <article class="work-card" style="--accent:#B0483F">
+            <span class="work-card__index">05</span>
+            <div class="work-card__top">
+              <h3>Pahel — CSR Club</h3>
+              <p class="work-card__role">Member · IMT Hyderabad</p>
+              <p class="work-card__dates">Jul '25 — Present</p>
+            </div>
+            <ul>
+              <li>Co-designed a comprehensive <strong>12-week Literacy Camp</strong> framework.</li>
+              <li>Week-wise process flows that reduced execution gaps on the ground.</li>
+            </ul>
+            <span class="work-card__tag">Impact × Process design</span>
+          </article>
+
+          <article class="work-card" style="--accent:#6B5B9A">
+            <span class="work-card__index">06</span>
+            <div class="work-card__top">
+              <h3>Eagle Point</h3>
+              <p class="work-card__role">Program Co-builder</p>
+              <p class="work-card__dates">Dec '25 — Jan '26</p>
+            </div>
+            <ul>
+              <li>Co-built a <strong>live residential training program</strong>.</li>
+              <li>Supported course structure and execution planning from zero to launch.</li>
+            </ul>
+            <span class="work-card__tag">Learning design × Execution</span>
+          </article>
+
+          <div class="work-card work-card--end">
+            <p>…and the next<br /><em>plot point</em><br />could be yours.</p>
+            <a href="#contact" data-hover>Say hello ↗</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CHAPTER 03 — POSTS & WRITE-UPS ============ -->
+    <section class="chapter posts" id="posts" data-chapter="Ch. 03 — Posts & Write-ups" data-bg="#E9DEF8" data-b1="#9F7BFF" data-b2="#FF8FB1" data-b3="#6FB6FF" data-b4="#FFC94D">
+      <div class="chapter__head">
+        <span class="chapter__num" data-reveal>Chapter 03</span>
+        <h2 class="chapter__title" data-split-lines>Fresh Ink</h2>
+        <p class="chapter__sub" data-reveal>Essays and write-ups, brewing. First drop coming soon — here's what's on the desk.</p>
+      </div>
+
+      <!-- EDIT ME: swap the draft rows below for real post links when published -->
+      <div class="posts__list">
+        <a class="post-row post-row--live" href="https://www.linkedin.com/posts/-hafsah-sayeedah-9923711b0_womenempowerment-changemakers-rotaryclub-activity-7239223260804980736-1UNf" target="_blank" rel="noopener" data-hover data-reveal>
+          <span class="post-row__num">01</span>
+          <span class="post-row__title">Teaching 300+ young women to defend themselves — with Rotary Club of Madras Midtown</span>
+          <span class="post-row__tag">LinkedIn · Live</span>
+          <span class="post-row__arrow">↗</span>
+        </a>
+        <a class="post-row" href="#contact" data-hover data-reveal>
+          <span class="post-row__num">02</span>
+          <span class="post-row__title">Why the best brands behave like people</span>
+          <span class="post-row__tag">Branding · Draft</span>
+          <span class="post-row__arrow">✍︎</span>
+        </a>
+        <a class="post-row" href="#contact" data-hover data-reveal>
+          <span class="post-row__num">03</span>
+          <span class="post-row__title">Notes from a 14-day congress with 80 countries in one room</span>
+          <span class="post-row__tag">Experience · Draft</span>
+          <span class="post-row__arrow">✍︎</span>
+        </a>
+        <a class="post-row" href="#contact" data-hover data-reveal>
+          <span class="post-row__num">04</span>
+          <span class="post-row__title">What a black belt taught me about positioning</span>
+          <span class="post-row__tag">Strategy · Draft</span>
+          <span class="post-row__arrow">✍︎</span>
+        </a>
+        <a class="post-row" href="#contact" data-hover data-reveal>
+          <span class="post-row__num">05</span>
+          <span class="post-row__title">Selling premium in a price-sensitive market</span>
+          <span class="post-row__tag">RTM · Draft</span>
+          <span class="post-row__arrow">✍︎</span>
+        </a>
+      </div>
+      <p class="posts__note" data-reveal>Want an early read? <a href="#contact" data-hover>Ask for a draft →</a></p>
+    </section>
+
+    <!-- ============ CHAPTER 04 — RTM PROJECTS ============ -->
+    <section class="chapter rtm" id="rtm" data-chapter="Ch. 04 — RTM Projects" data-bg="#CFEDE2" data-b1="#2BB5A0" data-b2="#FFB84D" data-b3="#FF7A59" data-b4="#7FB5FF">
+      <div class="rtm__pin">
+        <div class="rtm__grid">
+          <div class="rtm__copy">
+            <span class="chapter__num">Chapter 04</span>
+            <h2 class="chapter__title">On the<br />Ground</h2>
+            <p class="rtm__client">Kumbayah Foods Pvt Ltd <span>· Live RTM project · Mar '26 — Present</span></p>
+            <p class="rtm__desc">
+              Driving B2B sales for the premium segment as part of Kumbayah's Hyderabad
+              market expansion — from first knock to repeat order.
+            </p>
+
+            <div class="rtm__steps">
+              <div class="rtm-step" data-step="0">
+                <span class="rtm-step__num">S1</span>
+                <div>
+                  <h4>Research &amp; segment</h4>
+                  <p>Targeted market research and segmentation across four micro-markets to find high-potential clients.</p>
+                </div>
+              </div>
+              <div class="rtm-step" data-step="1">
+                <span class="rtm-step__num">S2</span>
+                <div>
+                  <h4>Convert</h4>
+                  <p>Lead conversion for the premium B2B segment — pitch, negotiate, close.</p>
+                </div>
+              </div>
+              <div class="rtm-step" data-step="2">
+                <span class="rtm-step__num">S3</span>
+                <div>
+                  <h4>Onboard &amp; track</h4>
+                  <p>End-to-end client lifecycle: onboarding, order tracking, and account care.</p>
+                </div>
+              </div>
+              <div class="rtm-step" data-step="3">
+                <span class="rtm-step__num">S4</span>
+                <div>
+                  <h4>Scale the route</h4>
+                  <p>Distributor identification and retail-sector exploration to widen the route to market.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="rtm__map" aria-hidden="true">
+            <svg viewBox="0 0 400 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path id="routePath" d="M60 60 C 180 90, 300 110, 320 170 C 340 235, 150 245, 120 300 C 90 355, 280 375, 300 440"
+                    stroke="#D45B2C" stroke-width="3" stroke-dasharray="8 8" stroke-linecap="round"/>
+              <g class="rtm-stop" data-stop="0">
+                <circle cx="60" cy="60" r="10"/><circle cx="60" cy="60" r="20" class="rtm-stop__pulse"/>
+                <text x="84" y="66">Financial District</text>
+              </g>
+              <g class="rtm-stop" data-stop="1">
+                <circle cx="320" cy="170" r="10"/><circle cx="320" cy="170" r="20" class="rtm-stop__pulse"/>
+                <text x="205" y="150">Raidurg</text>
+              </g>
+              <g class="rtm-stop" data-stop="2">
+                <circle cx="120" cy="300" r="10"/><circle cx="120" cy="300" r="20" class="rtm-stop__pulse"/>
+                <text x="144" y="306">Gandipet</text>
+              </g>
+              <g class="rtm-stop" data-stop="3">
+                <circle cx="300" cy="440" r="10"/><circle cx="300" cy="440" r="20" class="rtm-stop__pulse"/>
+                <text x="180" y="480">Sainikpuri</text>
+              </g>
+              <text x="30" y="510" class="rtm__map-caption">HYDERABAD — the route, drawn by scroll ✦</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CHAPTER 05 — THE SHELF ============ -->
+    <section class="chapter shelf" id="shelf" data-chapter="Ch. 05 — The Shelf" data-bg="#FFEDBF" data-b1="#FFC145" data-b2="#FF7A48" data-b3="#A5CC5E" data-b4="#FF8FB1">
+      <div class="chapter__head">
+        <span class="chapter__num" data-reveal>Chapter 05</span>
+        <h2 class="chapter__title" data-split-lines>The Shelf</h2>
+        <p class="chapter__sub" data-reveal>Books, movies &amp; articles that shape how I see markets and people. Hover to peek.</p>
+      </div>
+
+      <!-- EDIT ME: put real titles on the card backs when ready -->
+      <div class="shelf__row">
+        <div class="shelf-card" data-hover data-reveal style="--tilt:-4deg; --accent:#D45B2C">
+          <div class="shelf-card__inner">
+            <div class="shelf-card__face shelf-card__front">
+              <span class="shelf-card__label">Currently reading</span>
+              <span class="shelf-card__big">Books</span>
+              <span class="shelf-card__hint">flip me ↻</span>
+            </div>
+            <div class="shelf-card__face shelf-card__back">
+              <p>The shelf is being stocked — current obsessions available on request.</p>
+              <span>Ask me over chai ☕</span>
+            </div>
+          </div>
+        </div>
+        <div class="shelf-card" data-hover data-reveal style="--tilt:3deg; --accent:#41648C">
+          <div class="shelf-card__inner">
+            <div class="shelf-card__face shelf-card__front">
+              <span class="shelf-card__label">Last watched</span>
+              <span class="shelf-card__big">Movies</span>
+              <span class="shelf-card__hint">flip me ↻</span>
+            </div>
+            <div class="shelf-card__face shelf-card__back">
+              <p>Stories in 24 frames a second — my watchlist doubles as a case-study library.</p>
+              <span>Recommendations traded gladly 🎬</span>
+            </div>
+          </div>
+        </div>
+        <div class="shelf-card" data-hover data-reveal style="--tilt:-2deg; --accent:#5A6E3A">
+          <div class="shelf-card__inner">
+            <div class="shelf-card__face shelf-card__front">
+              <span class="shelf-card__label">Saved &amp; annotated</span>
+              <span class="shelf-card__big">Articles</span>
+              <span class="shelf-card__hint">flip me ↻</span>
+            </div>
+            <div class="shelf-card__face shelf-card__back">
+              <p>A running archive of marketing teardowns, campaign breakdowns and sharp thinking.</p>
+              <span>Curated list coming soon 📌</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CHAPTER 06 — HOBBIES ============ -->
+    <section class="chapter hobbies" id="hobbies" data-chapter="Ch. 06 — Hobbies" data-bg="#FFD9E0" data-b1="#FF6B8A" data-b2="#FFB347" data-b3="#9D8BF0" data-b4="#6FCF97">
+      <div class="chapter__head">
+        <span class="chapter__num" data-reveal>Chapter 06</span>
+        <h2 class="chapter__title" data-split-lines>Off the Clock</h2>
+      </div>
+
+      <div class="hobby hobby--karate" data-reveal>
+        <div class="hobby__copy">
+          <span class="hobby__kicker">Martial arts</span>
+          <h3>Black belt.<br />World record.</h3>
+          <p>
+            Isshinryu Karate Black Belt <strong>Instructor</strong> — and part of the
+            <strong>Guinness World Record</strong> for the largest karate lesson ever organised
+            (World Karate Masters Association, Feb '25). I also took it beyond the dojo:
+            leading a <strong>self-defense session for 300+ young women</strong> in Chennai
+            with the Rotary Club of Madras Midtown &amp; Born To Fight.
+          </p>
+          <span class="hobby__badge">🥋 Guinness World Record — Feb 2025</span>
+          <span class="hobby__badge">🛡️ 300+ women trained in self-defense</span>
+        </div>
+        <div class="hobby__art" aria-hidden="true"><span>空手</span></div>
+      </div>
+
+      <div class="hobby hobby--marathon" data-reveal>
+        <div class="hobby__art hobby__art--num" aria-hidden="true"><span>42.2</span><em>km — because 42.1 felt lazy</em></div>
+        <div class="hobby__copy">
+          <span class="hobby__kicker">Marathon</span>
+          <h3>Endurance is a marketing skill.</h3>
+          <p>
+            Campaigns are marathons, not sprints. I train for both — pacing, patience,
+            and finishing strong when everyone else has stopped.
+          </p>
+        </div>
+      </div>
+
+      <div class="hobby hobby--photo" data-reveal>
+        <div class="hobby__copy">
+          <span class="hobby__kicker">Photography</span>
+          <h3>Behind the lens.</h3>
+          <p>
+            Photography &amp; Blog member, Media Relations Committee. Framing a shot and framing
+            a message are the same craft — you decide what the audience sees first.
+          </p>
+          <span class="hobby__badge">📸 Caught in the act →</span>
+        </div>
+        <div class="hobby__video">
+          <video src="assets/photoshoot.mp4" muted loop playsinline preload="metadata" id="hobbyVideo"></video>
+          <span class="hobby__video-caption">on assignment, IMT Hyderabad</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ EPILOGUE / CONTACT ============ -->
+    <section class="contact" id="contact" data-chapter="Epilogue — Say hello" data-bg="#1A1410" data-b1="#4A3320" data-b2="#5A2E1E" data-b3="#2E3A2A" data-b4="#3A2E4A">
+      <p class="contact__kicker" data-reveal>✦ Epilogue</p>
+      <h2 class="contact__title" data-split-lines>Let's write the next chapter.</h2>
+      <p class="contact__sub" data-reveal>For collaborations, campaigns, live projects — or a good book recommendation.</p>
+
+      <div class="contact__links">
+        <a href="mailto:hafsah6102002@gmail.com" class="contact__mail" data-hover data-reveal>hafsah6102002@gmail.com</a>
+        <a href="mailto:shafsahsayeedah@imthyderabad.edu.in" class="contact__mail contact__mail--small" data-hover data-reveal>shafsahsayeedah@imthyderabad.edu.in</a>
+        <a href="https://www.linkedin.com/in/-hafsah-sayeedah-9923711b0/" target="_blank" rel="noopener" class="contact__linkedin" data-hover data-reveal>LinkedIn ↗</a>
+      </div>
+
+      <footer class="footer">
+        <span>© 2026 Hafsah Sayeedah</span>
+        <a href="#hero" data-hover>Back to the beginning ↑</a>
+        <span>Made with stories &amp; chai ☕</span>
+      </footer>
+    </section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
