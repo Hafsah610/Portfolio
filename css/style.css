@@ -5,22 +5,22 @@
    ============================================================ */
 
 :root {
-  /* wodniack-style red & black — red canvas, black ink, ruled lines
+  /* wodniack-style red & black — VIVID crimson canvas, maroon-black ink
      (variable names kept from earlier themes: --cream now = the red
       that plays the "light" role on black cells) */
-  --cream: #e03a3a;          /* red — text color on black cells */
-  --cream-2: #ea4b45;
+  --cream: #ed1941;          /* vivid crimson — text color on black cells */
+  --cream-2: #f0224a;
   --sage: #d9d4c9;
-  --ink: #0c0909;            /* black — type, borders, rules */
-  --ink-soft: rgba(12, 9, 9, 0.72);
-  --surface: #d63434;        /* slightly darker red card surface */
-  --line: rgba(12, 9, 9, 0.8);
-  --terracotta: #0c0909;     /* the accent on red IS black */
-  --mustard: #7a1115;
+  --ink: #150307;            /* maroon-black — type, borders, rules */
+  --ink-soft: rgba(21, 3, 7, 0.72);
+  --surface: #de1238;        /* slightly darker crimson card surface */
+  --line: rgba(21, 3, 7, 0.8);
+  --terracotta: #150307;     /* the accent on red IS black */
+  --mustard: #8e0b24;
   --olive: #55524c;
   --blue: #2e2c28;
   --plum: #6b6862;
-  --rust: #8e1418;           /* deepest red */
+  --rust: #a50f2c;           /* deep crimson */
   --paper: #f2e9dc;          /* rare highlight */
 
   --serif: "Fraunces", "Times New Roman", serif;
@@ -39,7 +39,7 @@ html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 
 body {
-  background: #e03a3a;
+  background: #ed1941;
   color: var(--ink);
   font-family: var(--sans);
   font-weight: 400;
@@ -47,6 +47,15 @@ body {
   overflow-x: hidden;
   /* no CSS bg transition — GSAP tweens it; both together force constant repaints */
   cursor: none;
+}
+
+/* wodniack dotted grid, fixed behind everything */
+body::before {
+  content: "";
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(21, 3, 7, 0.22) 1.2px, transparent 1.4px);
+  background-size: 26px 26px;
 }
 
 main, .nav { position: relative; z-index: 2; }
@@ -63,48 +72,7 @@ img, video { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 ul { list-style: none; }
 
-/* ---------- animated background: blobs + 3D field ---------- */
-.bg-blobs {
-  position: fixed; inset: 0; z-index: 0;
-  pointer-events: none; overflow: hidden;
-  --b1: #b31f23; --b2: #ea4b45; --b3: #8e1418; --b4: #1a0d0d;
-}
-/* soft radial gradients instead of filter:blur — identical look, ~free to
-   composite (blur(80px) on 55vmax layers re-rasterizes on every color change) */
-.blob {
-  position: absolute; border-radius: 50%;
-  opacity: 0.4;
-  will-change: transform;
-}
-.blob--1 {
-  width: 62vmax; height: 62vmax;
-  background: radial-gradient(circle, var(--b1) 0%, transparent 62%);
-  top: -22vmax; left: -18vmax;
-  animation: blobDrift1 24s ease-in-out infinite alternate;
-}
-.blob--2 {
-  width: 54vmax; height: 54vmax;
-  background: radial-gradient(circle, var(--b2) 0%, transparent 62%);
-  bottom: -20vmax; right: -16vmax;
-  animation: blobDrift2 30s ease-in-out infinite alternate;
-}
-.blob--3 {
-  width: 44vmax; height: 44vmax;
-  background: radial-gradient(circle, var(--b3) 0%, transparent 62%);
-  top: 22%; left: 42%;
-  animation: blobDrift3 36s ease-in-out infinite alternate;
-}
-.blob--4 {
-  width: 38vmax; height: 38vmax;
-  background: radial-gradient(circle, var(--b4) 0%, transparent 62%);
-  bottom: 4%; left: 6%;
-  animation: blobDrift4 28s ease-in-out infinite alternate;
-}
-@keyframes blobDrift1 { to { transform: translate(20vw, 24vh) scale(1.2) rotate(20deg); } }
-@keyframes blobDrift2 { to { transform: translate(-18vw, -20vh) scale(0.9); } }
-@keyframes blobDrift3 { to { transform: translate(-24vw, 16vh) scale(1.3); } }
-@keyframes blobDrift4 { to { transform: translate(16vw, -14vh) scale(1.15); } }
-
+/* ---------- 3D field ---------- */
 #webgl {
   position: fixed; inset: 0;
   width: 100vw; height: 100vh;
@@ -347,18 +315,20 @@ ul { list-style: none; }
   text-transform: uppercase;
 }
 
-/* giant ghost word sliding behind each chapter */
+/* giant BOLD ghost word sliding behind each chapter (wodniack WORK-section style) */
 .chapter__ghost {
-  position: absolute; top: clamp(1rem, 4vw, 3rem); left: 0;
+  position: absolute; top: clamp(0.5rem, 3vw, 2rem); left: 0;
   font-family: var(--display);
-  font-size: clamp(6rem, 22vw, 20rem);
+  font-size: clamp(7rem, 26vw, 24rem);
   line-height: 1; white-space: nowrap;
   text-transform: uppercase;
-  color: transparent;
-  -webkit-text-stroke: 1.5px rgba(12, 9, 9, 0.16);
+  color: var(--rust);
+  opacity: 0.5;
+  text-shadow: 0.045em 0.045em 0 rgba(21, 3, 7, 0.35);
   pointer-events: none; user-select: none;
   z-index: 0;
 }
+.contact .chapter__ghost { color: var(--cream); opacity: 0.3; }
 
 /* scroll-spinning star */
 .spin-star {
@@ -510,7 +480,7 @@ ul { list-style: none; }
   content: "✦"; position: absolute; left: 0; top: 0;
   color: var(--accent, var(--terracotta)); font-size: 0.7rem;
 }
-.work-card li strong { color: var(--cream); }
+.work-card li strong { color: var(--ink); }
 .work-card__tag {
   margin-top: 1.4rem; padding-top: 1rem;
   border-top: 1.5px dashed var(--line);
@@ -775,7 +745,9 @@ ul { list-style: none; }
   text-align: center;
   border-radius: 0;
   border-top: 2px solid var(--ink);
+  position: relative; overflow: hidden;
 }
+.contact > *:not(.chapter__ghost) { position: relative; z-index: 1; }
 .contact__kicker {
   font-family: var(--mono);
   font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.35em;

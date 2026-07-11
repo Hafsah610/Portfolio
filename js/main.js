@@ -87,14 +87,8 @@ document.querySelectorAll('[data-split-lines]').forEach((el) => {
   sizeIt();
   window.addEventListener('resize', sizeIt);
 
-  scene.add(new THREE.AmbientLight(0xffffff, 0.85));
-  const key = new THREE.DirectionalLight(0xffffff, 0.7);
-  key.position.set(4, 6, 8);
-  scene.add(key);
-
-  // solid pieces are black / deep red; most of the field is black WIREFRAME
-  // line-art (wodniack style) — MeshBasic wireframes are also the cheapest
-  const palette = [0x0c0909, 0x8e1418, 0x1a0d0d, 0xb31f23];
+  // the whole field is black wireframe line-art (wodniack style) —
+  // MeshBasicMaterial needs no lights and is the cheapest possible material
   const geos = [
     () => new THREE.TorusKnotGeometry(0.8, 0.28, 64, 12),
     () => new THREE.IcosahedronGeometry(0.9, 0),
@@ -116,20 +110,12 @@ document.querySelectorAll('[data-split-lines]').forEach((el) => {
 
   for (let i = 0; i < COUNT; i++) {
     const geo = geos[i % geos.length]();
-    const isWire = i % 3 !== 2; // two thirds of the field is line-art
-    const mat = isWire
-      ? new THREE.MeshBasicMaterial({
-          color: 0x0c0909,
-          wireframe: true,
-          transparent: true,
-          opacity: 0.5,
-        })
-      : new THREE.MeshPhongMaterial({
-          color: palette[i % palette.length],
-          shininess: 30,
-          specular: 0x441414,
-          flatShading: true,
-        });
+    const mat = new THREE.MeshBasicMaterial({
+      color: 0x150307,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.4 + rand(i, 17) * 0.2,
+    });
     const m = new THREE.Mesh(geo, mat);
 
     const side = i % 2 === 0 ? -1 : 1;
@@ -368,7 +354,7 @@ if (!prefersReduced) {
   overlay.id = 'routePathDraw';
   overlay.removeAttribute('stroke-dasharray');
   overlay.setAttribute('stroke-width', '4');
-  base.setAttribute('stroke', 'rgba(12, 9, 9, 0.25)');
+  base.setAttribute('stroke', 'rgba(21, 3, 7, 0.3)');
   base.parentNode.insertBefore(overlay, base.nextSibling);
 
   const len = overlay.getTotalLength();
@@ -422,7 +408,6 @@ if (!prefersReduced) {
 /* ---------------- chapter indicator + bg shifts ---------------- */
 const chapterLabel = document.getElementById('chapterLabel');
 const indicator = document.querySelector('.chapter-indicator');
-const blobLayer = document.querySelector('.bg-blobs');
 
 const setChapter = (c) => {
   chapterLabel.textContent = c.label;
@@ -431,21 +416,12 @@ const setChapter = (c) => {
   if (c.bg) {
     gsap.to('body', { backgroundColor: c.bg, duration: 0.9, ease: 'power2.out', overwrite: 'auto' });
   }
-  if (c.b1) {
-    gsap.to(blobLayer, {
-      '--b1': c.b1, '--b2': c.b2, '--b3': c.b3, '--b4': c.b4,
-      duration: 1.2, ease: 'power2.out', overwrite: 'auto',
-    });
-  }
 };
 
 const chapterTriggers = [];
 let chaptersReady = false;
 
-const heroChapter = {
-  label: 'Prologue', bg: '#E03A3A', hide: false,
-  b1: '#B31F23', b2: '#EA4B45', b3: '#8E1418', b4: '#1A0D0D',
-};
+const heroChapter = { label: 'Prologue', bg: '#ED1941', hide: false };
 chapterTriggers.push({
   ...heroChapter,
   st: ScrollTrigger.create({
@@ -459,10 +435,7 @@ chapterTriggers.push({
 
 document.querySelectorAll('[data-chapter]').forEach((sec) => {
   const d = sec.dataset;
-  const c = {
-    label: d.chapter, bg: d.bg, hide: sec.id === 'contact',
-    b1: d.b1, b2: d.b2, b3: d.b3, b4: d.b4,
-  };
+  const c = { label: d.chapter, bg: d.bg, hide: sec.id === 'contact' };
   chapterTriggers.push({
     ...c,
     st: ScrollTrigger.create({
@@ -489,6 +462,9 @@ gsap.to('#progressBar', {
   ease: 'none',
   scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 0.3 },
 });
+
+/* ---------------- refresh pins once fonts/images settle ---------------- */
+window.addEventListener('load', () => ScrollTrigger.refresh());
 
 /* ---------------- hobby video autoplay ---------------- */
 (() => {
