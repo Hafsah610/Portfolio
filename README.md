@@ -1,6 +1,6 @@
 # Hafsah Sayeedah — Marketing Portfolio ✦
 
-A scroll-driven, storytelling portfolio told in **six chapters** — red & black theme — black surfaces, vermilion red accents, paper-white type — with a full-page animated 3D background, and a route map that draws itself as you scroll.
+A scroll-driven, storytelling portfolio told in **six chapters** — a wodniack.dev-inspired red & black design — crimson canvas, black condensed type, wireframe 3D line-art, binary data tickers — where everything moves with scroll: ghost words drift, stars spin, the hero splits apart, and a route map draws itself.
 
 **Live site:** enable GitHub Pages (Settings → Pages → Deploy from branch → `main`, root) and it will be served at `https://hafsah610.github.io/Portfolio/`
 
@@ -23,7 +23,7 @@ A scroll-driven, storytelling portfolio told in **six chapters** — red & black
 - [Three.js](https://threejs.org/) — full-page 3D background field (30 floating shapes, mouse parallax, scroll traversal)
 - [GSAP + ScrollTrigger](https://gsap.com/) — pinned sections, scrubbed animations, counters, reveals
 - [Lenis](https://lenis.darkroom.engineering/) — smooth scrolling
-- Fonts: [Fraunces](https://fonts.google.com/specimen/Fraunces) + [Space Grotesk](https://fonts.google.com/specimen/Space+Grotesk)
+- Fonts: [Anton](https://fonts.google.com/specimen/Anton) (display) + [Fraunces](https://fonts.google.com/specimen/Fraunces) (serif body) + [Space Grotesk](https://fonts.google.com/specimen/Space+Grotesk) (labels)
 
 All libraries load from CDNs; the site is fully static.
 
@@ -52,7 +52,7 @@ Search `index.html` for **`EDIT ME`** comments:
 - **Posts** — replace the draft rows with real article links as they're published
 - **The Shelf** — put real book / movie / article titles on the card backs
 
-Chapter background & glow colors live in each `<section>`'s `data-bg` / `data-b1..b4` attributes; the global palette (black, vermilion red, paper type) is the CSS variables at the top of `css/style.css`.
+Chapter background & glow colors live in each `<section>`'s `data-bg` / `data-b1..b4` attributes; the global palette (crimson red canvas, black ink) is the CSS variables at the top of `css/style.css`.
 
 ---
 

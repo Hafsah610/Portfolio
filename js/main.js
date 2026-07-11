@@ -87,16 +87,14 @@ document.querySelectorAll('[data-split-lines]').forEach((el) => {
   sizeIt();
   window.addEventListener('resize', sizeIt);
 
-  scene.add(new THREE.AmbientLight(0xfff0e8, 0.75));
-  const key = new THREE.DirectionalLight(0xffffff, 1.1);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.85));
+  const key = new THREE.DirectionalLight(0xffffff, 0.7);
   key.position.set(4, 6, 8);
   scene.add(key);
-  const warm = new THREE.PointLight(0xff5533, 0.9, 50);
-  warm.position.set(-6, -4, 6);
-  scene.add(warm);
 
-  // red & black field — vermilions, deep reds, charcoals, a few paper pieces
-  const palette = [0xe63e21, 0x1f1915, 0xb3401f, 0xf1ede6, 0x2e2621, 0x8c1d0e, 0x3a2f28, 0xe63e21];
+  // solid pieces are black / deep red; most of the field is black WIREFRAME
+  // line-art (wodniack style) — MeshBasic wireframes are also the cheapest
+  const palette = [0x0c0909, 0x8e1418, 0x1a0d0d, 0xb31f23];
   const geos = [
     () => new THREE.TorusKnotGeometry(0.8, 0.28, 64, 12),
     () => new THREE.IcosahedronGeometry(0.9, 0),
@@ -118,14 +116,20 @@ document.querySelectorAll('[data-split-lines]').forEach((el) => {
 
   for (let i = 0; i < COUNT; i++) {
     const geo = geos[i % geos.length]();
-    // Phong is much cheaper per-pixel than Standard (PBR) and looks the same
-    // at this size — glossy toy-like shapes
-    const mat = new THREE.MeshPhongMaterial({
-      color: palette[i % palette.length],
-      shininess: 45,
-      specular: 0x555555,
-      flatShading: i % 3 !== 0,
-    });
+    const isWire = i % 3 !== 2; // two thirds of the field is line-art
+    const mat = isWire
+      ? new THREE.MeshBasicMaterial({
+          color: 0x0c0909,
+          wireframe: true,
+          transparent: true,
+          opacity: 0.5,
+        })
+      : new THREE.MeshPhongMaterial({
+          color: palette[i % palette.length],
+          shininess: 30,
+          specular: 0x441414,
+          flatShading: true,
+        });
     const m = new THREE.Mesh(geo, mat);
 
     const side = i % 2 === 0 ? -1 : 1;
@@ -177,9 +181,9 @@ document.querySelectorAll('[data-split-lines]').forEach((el) => {
     if (!prefersReduced) {
       group.rotation.y += (mouseX * 0.1 - group.rotation.y) * 0.04;
       group.rotation.x += (mouseY * 0.06 - group.rotation.x) * 0.04;
-      // travel through the field as the page scrolls
+      // travel through the field as the page scrolls, slowly rolling
       group.position.y = window.scrollY * SCROLL_FACTOR;
-      group.rotation.z = Math.sin(t * 0.08) * 0.02;
+      group.rotation.z = Math.sin(t * 0.08) * 0.02 + window.scrollY * 0.00005;
     }
     renderer.render(scene, camera);
   };
@@ -220,14 +224,20 @@ document.querySelectorAll('[data-split-lines]').forEach((el) => {
     .to('.hero .hero__blurb', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.6');
 })();
 
-/* ---------------- generic reveals ---------------- */
+/* ---------------- generic reveals (directional) ---------------- */
 if (!prefersReduced) {
   document.querySelectorAll('[data-reveal]').forEach((el) => {
     // hero reveals are handled by the intro timeline
     if (el.closest('.hero')) return;
+    const dir = el.getAttribute('data-reveal');
+    if (dir === 'left') gsap.set(el, { x: -70 });
+    if (dir === 'right') gsap.set(el, { x: 70 });
+    if (dir === 'rotate') gsap.set(el, { rotation: 3, y: 70 });
     gsap.to(el, {
       opacity: 1,
+      x: 0,
       y: 0,
+      rotation: 0,
       duration: 1,
       ease: 'power3.out',
       scrollTrigger: { trigger: el, start: 'top 88%' },
@@ -237,9 +247,10 @@ if (!prefersReduced) {
   document.querySelectorAll('[data-split-lines]').forEach((el) => {
     gsap.fromTo(
       el.querySelectorAll('.line > span'),
-      { yPercent: 115 },
+      { yPercent: 115, rotation: 2 },
       {
         yPercent: 0,
+        rotation: 0,
         duration: 1.1,
         ease: 'power4.out',
         stagger: 0.09,
@@ -247,6 +258,65 @@ if (!prefersReduced) {
       }
     );
   });
+}
+
+/* ---------------- whole-page scroll choreography ---------------- */
+if (!prefersReduced) {
+  // hero splits apart as you scroll away
+  gsap.timeline({
+    scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 0.6 },
+  })
+    .to('.hero__line:first-child', { xPercent: -14, ease: 'none' }, 0)
+    .to('.hero__line--right', { xPercent: 10, ease: 'none' }, 0)
+    .to('.hero__meta', { opacity: 0, y: -40, ease: 'none' }, 0);
+  // (the kicker is NOT in this scrub — its data-reveal start state is opacity 0,
+  //  and a scrubbed .to() would capture that 0 as its start value and lock it)
+
+  // giant ghost words drift sideways behind each chapter
+  document.querySelectorAll('.chapter__ghost').forEach((el) => {
+    gsap.fromTo(el, { xPercent: 5 }, {
+      xPercent: -30,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: el.closest('section'),
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 0.5,
+      },
+    });
+  });
+
+  // stars spin with scroll
+  document.querySelectorAll('.spin-star').forEach((el) => {
+    gsap.to(el, {
+      rotation: 360,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: el.closest('section'),
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 1,
+      },
+    });
+  });
+
+  // portrait drifts inside its arch
+  gsap.fromTo('.about__frame img', { yPercent: -6 }, {
+    yPercent: 6,
+    ease: 'none',
+    scrollTrigger: { trigger: '.about__figure', start: 'top bottom', end: 'bottom top', scrub: 0.5 },
+  });
+
+  // tickers skew with scroll velocity
+  if (lenis) {
+    const skews = [...document.querySelectorAll('.marquee__track')].map((t) =>
+      gsap.quickTo(t, 'skewX', { duration: 0.4, ease: 'power2.out' })
+    );
+    lenis.on('scroll', (e) => {
+      const s = gsap.utils.clamp(-8, 8, (e.velocity || 0) * 0.35);
+      skews.forEach((fn) => fn(s));
+    });
+  }
 }
 
 /* ---------------- stat counters ---------------- */
@@ -298,7 +368,7 @@ if (!prefersReduced) {
   overlay.id = 'routePathDraw';
   overlay.removeAttribute('stroke-dasharray');
   overlay.setAttribute('stroke-width', '4');
-  base.setAttribute('stroke', 'rgba(241, 237, 230, 0.18)');
+  base.setAttribute('stroke', 'rgba(12, 9, 9, 0.25)');
   base.parentNode.insertBefore(overlay, base.nextSibling);
 
   const len = overlay.getTotalLength();
@@ -373,8 +443,8 @@ const chapterTriggers = [];
 let chaptersReady = false;
 
 const heroChapter = {
-  label: 'Prologue', bg: '#100E0D', hide: false,
-  b1: '#3A0E06', b2: '#200B07', b3: '#2A2522', b4: '#E63E21',
+  label: 'Prologue', bg: '#E03A3A', hide: false,
+  b1: '#B31F23', b2: '#EA4B45', b3: '#8E1418', b4: '#1A0D0D',
 };
 chapterTriggers.push({
   ...heroChapter,
