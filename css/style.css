@@ -5,17 +5,19 @@
    ============================================================ */
 
 :root {
-  --cream: #f3ece2;
-  --cream-2: #efe3d3;
-  --sage: #e9e9dc;
-  --ink: #20180f;
-  --ink-soft: #4a4036;
-  --terracotta: #d45b2c;
-  --mustard: #c79a2e;
-  --olive: #5a6e3a;
-  --blue: #41648c;
-  --plum: #6b5b9a;
-  --rust: #b0483f;
+  /* black & white editorial palette — paper, ink, greys, one red accent,
+     a rare amber highlight (variable names kept from the old theme) */
+  --cream: #f3f1ea;
+  --cream-2: #e9e7df;
+  --sage: #e2e0d8;
+  --ink: #101010;
+  --ink-soft: #4a4844;
+  --terracotta: #e63e21;
+  --mustard: #d9a13b;
+  --olive: #55524c;
+  --blue: #2e2c28;
+  --plum: #6b6862;
+  --rust: #b3401f;
 
   --serif: "Fraunces", "Times New Roman", serif;
   --sans: "Space Grotesk", -apple-system, sans-serif;
@@ -31,7 +33,7 @@ html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 
 body {
-  background: #fbe3c4;
+  background: #f3f1ea;
   color: var(--ink);
   font-family: var(--sans);
   font-weight: 400;
@@ -59,7 +61,7 @@ ul { list-style: none; }
 .bg-blobs {
   position: fixed; inset: 0; z-index: 0;
   pointer-events: none; overflow: hidden;
-  --b1: #ff8c5a; --b2: #ffc94d; --b3: #7fb5ff; --b4: #ff9bb8;
+  --b1: #dcd9cf; --b2: #bebbb1; --b3: #ffffff; --b4: #f0745c;
 }
 /* soft radial gradients instead of filter:blur — identical look, ~free to
    composite (blur(80px) on 55vmax layers re-rasterizes on every color change) */
@@ -120,7 +122,7 @@ ul { list-style: none; }
 }
 .progress span {
   display: block; height: 100%; width: 100%;
-  background: linear-gradient(90deg, var(--terracotta), var(--mustard));
+  background: linear-gradient(90deg, var(--terracotta), var(--ink));
   transform-origin: left;
   transform: scaleX(0);
 }
@@ -249,6 +251,15 @@ ul { list-style: none; }
 }
 .hero__line { display: block; overflow: hidden; }
 .hero__line--right { text-align: right; color: var(--terracotta); }
+/* outlined second line — signature B/W editorial move */
+@supports (-webkit-text-stroke: 2px black) {
+  .hero__line--right { color: transparent; -webkit-text-stroke: 2.5px var(--ink); }
+}
+@media (max-width: 700px) {
+  @supports (-webkit-text-stroke: 2px black) {
+    .hero__line--right { -webkit-text-stroke: 1.5px var(--ink); }
+  }
+}
 .hero__line .char { display: inline-block; }
 
 .hero__meta {
@@ -394,7 +405,7 @@ ul { list-style: none; }
   font-size: clamp(2.4rem, 5.5vw, 4.5rem); line-height: 1;
   display: block; color: var(--terracotta);
 }
-.stat:nth-child(2) .stat__num { color: var(--blue); }
+.stat:nth-child(2) .stat__num { color: var(--ink); }
 .stat:nth-child(3) .stat__num { color: var(--olive); }
 .stat:nth-child(4) .stat__num { color: var(--mustard); }
 .stat__label {
@@ -648,9 +659,9 @@ ul { list-style: none; }
   border: 2px solid var(--ink);
 }
 @media (max-width: 900px) { .hobby { grid-template-columns: 1fr; } }
-.hobby--karate { background: var(--ink); color: var(--cream); box-shadow: 10px 10px 0 var(--rust); }
-.hobby--marathon { background: var(--mustard); box-shadow: 10px 10px 0 var(--ink); }
-.hobby--photo { background: var(--olive); color: var(--cream); box-shadow: 10px 10px 0 var(--ink); }
+.hobby--karate { background: var(--ink); color: var(--cream); box-shadow: 10px 10px 0 var(--terracotta); }
+.hobby--marathon { background: #fdfcf9; box-shadow: 10px 10px 0 var(--ink); }
+.hobby--photo { background: #23211d; color: var(--cream); box-shadow: 10px 10px 0 var(--plum); }
 
 .hobby__kicker {
   font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.3em;
@@ -684,7 +695,7 @@ ul { list-style: none; }
 .hobby__art--num span {
   font-size: clamp(5rem, 12vw, 9rem); line-height: 1;
   font-style: italic;
-  color: var(--ink);
+  color: var(--terracotta);
 }
 .hobby__art--num em {
   font-family: var(--sans); font-style: normal;

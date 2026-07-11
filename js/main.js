@@ -87,16 +87,16 @@ document.querySelectorAll('[data-split-lines]').forEach((el) => {
   sizeIt();
   window.addEventListener('resize', sizeIt);
 
-  scene.add(new THREE.AmbientLight(0xfff2e0, 0.9));
+  scene.add(new THREE.AmbientLight(0xfffaf0, 0.9));
   const key = new THREE.DirectionalLight(0xffffff, 0.95);
   key.position.set(4, 6, 8);
   scene.add(key);
-  const warm = new THREE.PointLight(0xff8c5a, 1.2, 50);
+  const warm = new THREE.PointLight(0xffe8d8, 0.8, 50);
   warm.position.set(-6, -4, 6);
   scene.add(warm);
 
-  // punchier palette to match the blob layer
-  const palette = [0xff7a48, 0xffc145, 0x2bb5a0, 0x6fb6ff, 0x9f7bff, 0xff6b8a, 0x8fd14f, 0xe8524a];
+  // monochrome field — inks, papers, greys, with the odd red accent piece
+  const palette = [0x141414, 0xf5f3ec, 0x8f8c84, 0xe63e21, 0x2e2c28, 0xd8d5cb, 0xffffff, 0x55524c];
   const geos = [
     () => new THREE.TorusKnotGeometry(0.8, 0.28, 64, 12),
     () => new THREE.IcosahedronGeometry(0.9, 0),
@@ -373,8 +373,8 @@ const chapterTriggers = [];
 let chaptersReady = false;
 
 const heroChapter = {
-  label: 'Prologue', bg: '#FBE3C4', hide: false,
-  b1: '#FF8C5A', b2: '#FFC94D', b3: '#7FB5FF', b4: '#FF9BB8',
+  label: 'Prologue', bg: '#F3F1EA', hide: false,
+  b1: '#DCD9CF', b2: '#BEBBB1', b3: '#FFFFFF', b4: '#F0745C',
 };
 chapterTriggers.push({
   ...heroChapter,
