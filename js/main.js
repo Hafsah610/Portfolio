@@ -87,16 +87,16 @@ document.querySelectorAll('[data-split-lines]').forEach((el) => {
   sizeIt();
   window.addEventListener('resize', sizeIt);
 
-  scene.add(new THREE.AmbientLight(0xfffaf0, 0.9));
-  const key = new THREE.DirectionalLight(0xffffff, 0.95);
+  scene.add(new THREE.AmbientLight(0xfff0e8, 0.75));
+  const key = new THREE.DirectionalLight(0xffffff, 1.1);
   key.position.set(4, 6, 8);
   scene.add(key);
-  const warm = new THREE.PointLight(0xffe8d8, 0.8, 50);
+  const warm = new THREE.PointLight(0xff5533, 0.9, 50);
   warm.position.set(-6, -4, 6);
   scene.add(warm);
 
-  // monochrome field — inks, papers, greys, with the odd red accent piece
-  const palette = [0x141414, 0xf5f3ec, 0x8f8c84, 0xe63e21, 0x2e2c28, 0xd8d5cb, 0xffffff, 0x55524c];
+  // red & black field — vermilions, deep reds, charcoals, a few paper pieces
+  const palette = [0xe63e21, 0x1f1915, 0xb3401f, 0xf1ede6, 0x2e2621, 0x8c1d0e, 0x3a2f28, 0xe63e21];
   const geos = [
     () => new THREE.TorusKnotGeometry(0.8, 0.28, 64, 12),
     () => new THREE.IcosahedronGeometry(0.9, 0),
@@ -298,7 +298,7 @@ if (!prefersReduced) {
   overlay.id = 'routePathDraw';
   overlay.removeAttribute('stroke-dasharray');
   overlay.setAttribute('stroke-width', '4');
-  base.setAttribute('stroke', 'rgba(32, 24, 15, 0.18)');
+  base.setAttribute('stroke', 'rgba(241, 237, 230, 0.18)');
   base.parentNode.insertBefore(overlay, base.nextSibling);
 
   const len = overlay.getTotalLength();
@@ -373,8 +373,8 @@ const chapterTriggers = [];
 let chaptersReady = false;
 
 const heroChapter = {
-  label: 'Prologue', bg: '#F3F1EA', hide: false,
-  b1: '#DCD9CF', b2: '#BEBBB1', b3: '#FFFFFF', b4: '#F0745C',
+  label: 'Prologue', bg: '#100E0D', hide: false,
+  b1: '#3A0E06', b2: '#200B07', b3: '#2A2522', b4: '#E63E21',
 };
 chapterTriggers.push({
   ...heroChapter,

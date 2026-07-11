@@ -1,6 +1,6 @@
 # Hafsah Sayeedah — Marketing Portfolio ✦
 
-A scroll-driven, storytelling portfolio told in **six chapters** — black & white editorial design with red accents, a full-page animated monochrome 3D background, and a route map that draws itself as you scroll.
+A scroll-driven, storytelling portfolio told in **six chapters** — red & black theme — black surfaces, vermilion red accents, paper-white type — with a full-page animated 3D background, and a route map that draws itself as you scroll.
 
 **Live site:** enable GitHub Pages (Settings → Pages → Deploy from branch → `main`, root) and it will be served at `https://hafsah610.github.io/Portfolio/`
 
@@ -52,7 +52,7 @@ Search `index.html` for **`EDIT ME`** comments:
 - **Posts** — replace the draft rows with real article links as they're published
 - **The Shelf** — put real book / movie / article titles on the card backs
 
-Chapter background & glow colors live in each `<section>`'s `data-bg` / `data-b1..b4` attributes; the global palette (paper, ink, greys, red accent) is the CSS variables at the top of `css/style.css`.
+Chapter background & glow colors live in each `<section>`'s `data-bg` / `data-b1..b4` attributes; the global palette (black, vermilion red, paper type) is the CSS variables at the top of `css/style.css`.
 
 ---
 
