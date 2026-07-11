@@ -73,8 +73,11 @@ document.querySelectorAll('[data-split-lines]').forEach((el) => {
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
   camera.position.z = 15;
 
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+  // cap the pixel ratio — full-screen rendering at 1.75x+ is the #1 scroll-jank
+  // source; MSAA at 1.25x is still far cheaper and keeps edges clean
+  const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'high-performance' });
+  renderer.setPixelRatio(dpr);
 
   const sizeIt = () => {
     renderer.setSize(window.innerWidth, window.innerHeight, false);
@@ -95,13 +98,13 @@ document.querySelectorAll('[data-split-lines]').forEach((el) => {
   // punchier palette to match the blob layer
   const palette = [0xff7a48, 0xffc145, 0x2bb5a0, 0x6fb6ff, 0x9f7bff, 0xff6b8a, 0x8fd14f, 0xe8524a];
   const geos = [
-    () => new THREE.TorusKnotGeometry(0.8, 0.28, 96, 16),
+    () => new THREE.TorusKnotGeometry(0.8, 0.28, 64, 12),
     () => new THREE.IcosahedronGeometry(0.9, 0),
-    () => new THREE.TorusGeometry(0.8, 0.32, 16, 48),
+    () => new THREE.TorusGeometry(0.8, 0.32, 12, 36),
     () => new THREE.ConeGeometry(0.8, 1.4, 5),
     () => new THREE.BoxGeometry(1.1, 1.1, 1.1),
     () => new THREE.OctahedronGeometry(0.95, 0),
-    () => new THREE.SphereGeometry(0.85, 24, 18),
+    () => new THREE.SphereGeometry(0.85, 20, 14),
   ];
 
   const group = new THREE.Group();
@@ -115,10 +118,12 @@ document.querySelectorAll('[data-split-lines]').forEach((el) => {
 
   for (let i = 0; i < COUNT; i++) {
     const geo = geos[i % geos.length]();
-    const mat = new THREE.MeshStandardMaterial({
+    // Phong is much cheaper per-pixel than Standard (PBR) and looks the same
+    // at this size — glossy toy-like shapes
+    const mat = new THREE.MeshPhongMaterial({
       color: palette[i % palette.length],
-      roughness: 0.32,
-      metalness: 0.12,
+      shininess: 45,
+      specular: 0x555555,
       flatShading: i % 3 !== 0,
     });
     const m = new THREE.Mesh(geo, mat);

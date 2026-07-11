@@ -37,7 +37,7 @@ body {
   font-weight: 400;
   line-height: 1.6;
   overflow-x: hidden;
-  transition: background-color 0.8s ease;
+  /* no CSS bg transition — GSAP tweens it; both together force constant repaints */
   cursor: none;
 }
 
@@ -61,30 +61,35 @@ ul { list-style: none; }
   pointer-events: none; overflow: hidden;
   --b1: #ff8c5a; --b2: #ffc94d; --b3: #7fb5ff; --b4: #ff9bb8;
 }
+/* soft radial gradients instead of filter:blur — identical look, ~free to
+   composite (blur(80px) on 55vmax layers re-rasterizes on every color change) */
 .blob {
   position: absolute; border-radius: 50%;
-  filter: blur(80px); opacity: 0.55;
+  opacity: 0.62;
   will-change: transform;
-  transition: background-color 1s ease;
 }
 .blob--1 {
-  width: 55vmax; height: 55vmax; background: var(--b1);
-  top: -18vmax; left: -14vmax;
+  width: 62vmax; height: 62vmax;
+  background: radial-gradient(circle, var(--b1) 0%, transparent 62%);
+  top: -22vmax; left: -18vmax;
   animation: blobDrift1 24s ease-in-out infinite alternate;
 }
 .blob--2 {
-  width: 46vmax; height: 46vmax; background: var(--b2);
-  bottom: -16vmax; right: -12vmax;
+  width: 54vmax; height: 54vmax;
+  background: radial-gradient(circle, var(--b2) 0%, transparent 62%);
+  bottom: -20vmax; right: -16vmax;
   animation: blobDrift2 30s ease-in-out infinite alternate;
 }
 .blob--3 {
-  width: 36vmax; height: 36vmax; background: var(--b3);
-  top: 26%; left: 48%;
+  width: 44vmax; height: 44vmax;
+  background: radial-gradient(circle, var(--b3) 0%, transparent 62%);
+  top: 22%; left: 42%;
   animation: blobDrift3 36s ease-in-out infinite alternate;
 }
 .blob--4 {
-  width: 30vmax; height: 30vmax; background: var(--b4);
-  bottom: 8%; left: 10%;
+  width: 38vmax; height: 38vmax;
+  background: radial-gradient(circle, var(--b4) 0%, transparent 62%);
+  bottom: 4%; left: 6%;
   animation: blobDrift4 28s ease-in-out infinite alternate;
 }
 @keyframes blobDrift1 { to { transform: translate(20vw, 24vh) scale(1.2) rotate(20deg); } }
@@ -100,20 +105,12 @@ ul { list-style: none; }
 }
 
 /* ---------- grain ---------- */
+/* static grain — the animated 200% layer cost more than the effect was worth */
 .grain {
-  position: fixed; inset: -50%;
-  width: 200%; height: 200%;
+  position: fixed; inset: 0;
   pointer-events: none; z-index: 9990;
-  opacity: 0.055;
+  opacity: 0.05;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation: grain 8s steps(10) infinite;
-}
-@keyframes grain {
-  0%, 100% { transform: translate(0, 0); }
-  20% { transform: translate(-2%, 2%); }
-  40% { transform: translate(2%, -1%); }
-  60% { transform: translate(-1%, -2%); }
-  80% { transform: translate(1%, 2%); }
 }
 
 /* ---------- progress ---------- */
@@ -203,9 +200,8 @@ ul { list-style: none; }
 .nav__logo span { color: var(--terracotta); font-size: 0.8em; }
 .nav__links {
   display: flex; gap: 0.5rem;
-  background: rgba(243, 236, 226, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  /* no backdrop-filter — it re-samples the animated page on every scrolled frame */
+  background: rgba(243, 236, 226, 0.9);
   border: 1px solid rgba(32, 24, 15, 0.12);
   border-radius: 999px;
   padding: 0.35rem 0.5rem;
