@@ -20,7 +20,7 @@ A scroll-driven, storytelling portfolio told in **six chapters** — a wodniack.
 ## Tech
 
 - **HTML / CSS / vanilla JS** — no build step, deploy anywhere
-- [Three.js](https://threejs.org/) — full-page 3D background field (30 floating shapes, mouse parallax, scroll traversal)
+- [Three.js](https://threejs.org/) — THE planet: a wireframe globe with orbit rings & satellites that journeys across chapters as you scroll (brand at the center, campaigns in orbit), plus a drifting wireframe field
 - [GSAP + ScrollTrigger](https://gsap.com/) — pinned sections, scrubbed animations, counters, reveals
 - [Lenis](https://lenis.darkroom.engineering/) — smooth scrolling
 - Fonts: [Anton](https://fonts.google.com/specimen/Anton) (display) + [Fraunces](https://fonts.google.com/specimen/Fraunces) (serif body) + [Space Grotesk](https://fonts.google.com/specimen/Space+Grotesk) (labels)

@@ -80,8 +80,12 @@ document.querySelectorAll('[data-split-lines]').forEach((el) => {
   renderer.setPixelRatio(dpr);
 
   const sizeIt = () => {
-    renderer.setSize(window.innerWidth, window.innerHeight, false);
-    camera.aspect = window.innerWidth / window.innerHeight;
+    // background tabs can report 0x0 — a 0/0 aspect is NaN and poisons
+    // every position computed from it, so guard the dimensions
+    const w = window.innerWidth || 1280;
+    const h = window.innerHeight || 800;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
     camera.updateProjectionMatrix();
   };
   sizeIt();
@@ -102,7 +106,7 @@ document.querySelectorAll('[data-split-lines]').forEach((el) => {
   const group = new THREE.Group();
   scene.add(group);
   const meshes = [];
-  const COUNT = 30;
+  const COUNT = 20;
   const rand = (i, salt) => ((i * salt) % 100) / 100; // deterministic pseudo-random
 
   // the field is a tall column of shapes; scrolling travels through it
@@ -114,14 +118,14 @@ document.querySelectorAll('[data-split-lines]').forEach((el) => {
       color: 0x150307,
       wireframe: true,
       transparent: true,
-      opacity: 0.4 + rand(i, 17) * 0.2,
+      opacity: 0.25 + rand(i, 17) * 0.15, // subtle — the planet is the star
     });
     const m = new THREE.Mesh(geo, mat);
 
     const side = i % 2 === 0 ? -1 : 1;
     if (i < 6) {
-      // hero cluster — visible on load
-      m.position.set(side * (3 + rand(i, 37) * 6), 3.5 - rand(i, 53) * 6, -2 - rand(i, 29) * 4);
+      // hero cluster — pushed to the edges so the planet owns the center-right
+      m.position.set(side * (6.5 + rand(i, 37) * 4), 4 - rand(i, 53) * 8, -5 - rand(i, 29) * 4);
     } else {
       // spread down the scroll column, biased to the sides for readability
       const depth = 46;
@@ -143,6 +147,123 @@ document.querySelectorAll('[data-split-lines]').forEach((el) => {
     };
     group.add(m);
     meshes.push(m);
+  }
+
+  /* ---- THE planet: her brand at the center, campaigns in orbit ----
+     one wireframe globe + orbit rings + satellites that journeys around
+     the screen as the story scrolls (ref: sattwikjana.vercel.app, re-cast
+     for the red/black print theme) */
+  const planet = new THREE.Group();
+  scene.add(planet);
+
+  const planetMats = [];
+  const pMat = (opacity, wireframe = false) => {
+    const m = new THREE.MeshBasicMaterial({
+      color: 0x150307, wireframe, transparent: true, opacity,
+    });
+    planetMats.push(m);
+    return m;
+  };
+
+  // sparse segments so the globe reads as clean lat/long lines, not a scribble
+  planet.add(new THREE.Mesh(new THREE.SphereGeometry(2.3, 14, 10), pMat(0.6, true)));
+
+  const ring1 = new THREE.Mesh(new THREE.TorusGeometry(3.4, 0.05, 8, 96), pMat(0.95));
+  ring1.rotation.set(Math.PI / 2.15, 0.25, 0);
+  planet.add(ring1);
+  const ring2 = new THREE.Mesh(new THREE.TorusGeometry(4.1, 0.03, 8, 96), pMat(0.55));
+  ring2.rotation.set(Math.PI / 2.6, 0, 0.5);
+  planet.add(ring2);
+
+  const makeSat = (ringRot, radius, size, speed, phase) => {
+    const base = new THREE.Group();
+    base.rotation.copy(ringRot);
+    const spinner = new THREE.Group();
+    base.add(spinner);
+    const sat = new THREE.Mesh(new THREE.BoxGeometry(size, size, size), pMat(1));
+    sat.position.x = radius;
+    spinner.add(sat);
+    planet.add(base);
+    return { spinner, sat, speed, phase };
+  };
+  const sats = [
+    makeSat(ring1.rotation, 3.3, 0.24, 0.5, 0),
+    makeSat(ring1.rotation, 3.3, 0.15, 0.5, Math.PI * 0.85),
+    makeSat(ring2.rotation, 3.9, 0.18, -0.34, 1.4),
+  ];
+
+  // where the planet sits for each chapter (x flips sides down the story)
+  const KF = [
+    { id: 'hero',    x: 5.6,  y: -1.1, z: -3.5, s: 1.6,  c: 0x150307 },
+    { id: 'about',   x: -6,   y: 0.2,  z: -4.5, s: 1.1,  c: 0x150307 },
+    { id: 'work',    x: 6.6,  y: 0.6,  z: -6,   s: 0.9,  c: 0x150307 },
+    { id: 'posts',   x: -6.4, y: -0.6, z: -5,   s: 1,    c: 0x150307 },
+    { id: 'rtm',     x: 6.2,  y: 0.4,  z: -5.5, s: 0.9,  c: 0x150307 },
+    { id: 'shelf',   x: -6.2, y: 0.8,  z: -5,   s: 1,    c: 0x150307 },
+    { id: 'hobbies', x: 6.4,  y: -0.5, z: -4.5, s: 1.1,  c: 0x150307 },
+    { id: 'contact', x: 0,    y: 0.4,  z: -2.8, s: 1.6,  c: 0xed1941 },
+  ];
+  // segment i begins when section i is ~half a viewport from the top, so the
+  // planet HOLDS each chapter position and travels between chapters
+  let kfOffsets = KF.map(() => 0);
+  const computeOffsets = () => {
+    kfOffsets = KF.map((k) => {
+      const el = document.getElementById(k.id);
+      if (!el) return 0;
+      return Math.max(0, el.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.55);
+    });
+  };
+  computeOffsets();
+  if (window.ScrollTrigger) ScrollTrigger.addEventListener('refresh', computeOffsets);
+  window.__planetDebug = { planet: null, offsets: () => kfOffsets };
+
+  const colA = new THREE.Color();
+  const colB = new THREE.Color();
+  const targetPos = new THREE.Vector3();
+
+  // start at the hero keyframe — no fly-in from the origin
+  const initAspect = isFinite(camera.aspect) && camera.aspect > 0 ? camera.aspect : 1.6;
+  planet.position.set(KF[0].x * Math.min(1, initAspect / 1.35), KF[0].y, KF[0].z);
+  planet.scale.setScalar(KF[0].s);
+  window.__planetDebug.planet = planet;
+
+  const placePlanet = (t) => {
+    const anchor = window.scrollY;
+    let i = 0;
+    while (i < KF.length - 2 && anchor > kfOffsets[i + 1]) i++;
+    const a = KF[i];
+    const b = KF[i + 1] || a;
+    const span = Math.max(1, (kfOffsets[i + 1] || kfOffsets[i] + 1) - kfOffsets[i]);
+    let f = gsap.utils.clamp(0, 1, (anchor - kfOffsets[i]) / span);
+    f = f * f * (3 - 2 * f); // smoothstep
+
+    const aspect = isFinite(camera.aspect) && camera.aspect > 0 ? camera.aspect : 1.6;
+    const aspectF = Math.min(1, aspect / 1.35); // pull inward on narrow screens
+    targetPos.set(
+      (a.x + (b.x - a.x) * f) * aspectF + mouseX * 0.4,
+      a.y + (b.y - a.y) * f + Math.sin(t * 0.5) * 0.18,
+      a.z + (b.z - a.z) * f
+    );
+    if (isFinite(planet.position.x)) planet.position.lerp(targetPos, 0.06);
+    else planet.position.copy(targetPos); // snap out of any NaN state
+    const ts = a.s + (b.s - a.s) * f;
+    planet.scale.setScalar(planet.scale.x + (ts - planet.scale.x) * 0.06);
+
+    colA.setHex(a.c).lerp(colB.setHex(b.c), f);
+    planetMats.forEach((m) => m.color.lerp(colA, 0.08));
+
+    planet.rotation.y += 0.0035;
+    planet.rotation.x = Math.sin(t * 0.18) * 0.1;
+    sats.forEach((s) => {
+      s.spinner.rotation.z = t * s.speed + s.phase;
+      s.sat.rotation.x += 0.02;
+      s.sat.rotation.y += 0.015;
+    });
+  };
+
+  if (prefersReduced) {
+    planet.position.set(KF[0].x, KF[0].y, KF[0].z);
+    planet.scale.setScalar(KF[0].s);
   }
 
   let mouseX = 0, mouseY = 0;
@@ -170,6 +291,7 @@ document.querySelectorAll('[data-split-lines]').forEach((el) => {
       // travel through the field as the page scrolls, slowly rolling
       group.position.y = window.scrollY * SCROLL_FACTOR;
       group.rotation.z = Math.sin(t * 0.08) * 0.02 + window.scrollY * 0.00005;
+      placePlanet(t);
     }
     renderer.render(scene, camera);
   };
@@ -384,9 +506,12 @@ if (!prefersReduced) {
   };
 
   // wide screens: cinematic pin; small screens: plain scrub (stacked layout
-  // is taller than the viewport, pinning would clip it)
-  if (window.matchMedia('(min-width: 900px)').matches) {
-    ScrollTrigger.create({
+  // is taller than the viewport, pinning would clip it). gsap.matchMedia
+  // re-evaluates on resize — a plain matchMedia check at load breaks when
+  // the page loads in a background tab reporting 0x0.
+  const mm = gsap.matchMedia();
+  mm.add('(min-width: 900px)', () => {
+    const st = ScrollTrigger.create({
       trigger: '#rtm',
       start: 'top top',
       end: '+=250%',
@@ -394,15 +519,18 @@ if (!prefersReduced) {
       scrub: 0.6,
       onUpdate,
     });
-  } else {
-    ScrollTrigger.create({
+    return () => st.kill();
+  });
+  mm.add('(max-width: 899px)', () => {
+    const st = ScrollTrigger.create({
       trigger: '#rtm',
       start: 'top 65%',
       end: 'bottom 85%',
       scrub: 0.6,
       onUpdate,
     });
-  }
+    return () => st.kill();
+  });
 })();
 
 /* ---------------- chapter indicator + bg shifts ---------------- */

@@ -740,11 +740,12 @@ ul { list-style: none; }
 
 /* ---------- contact ---------- */
 .contact {
-  background: var(--ink); color: var(--cream);
+  /* transparent — the body bg tweens to near-black here, letting the
+     3D planet (crimson at this chapter) show through behind the type */
+  background: transparent; color: var(--cream);
   padding: clamp(6rem, 12vw, 10rem) var(--pad) 2rem;
   text-align: center;
   border-radius: 0;
-  border-top: 2px solid var(--ink);
   position: relative; overflow: hidden;
 }
 .contact > *:not(.chapter__ghost) { position: relative; z-index: 1; }
