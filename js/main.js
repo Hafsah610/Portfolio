@@ -91,120 +91,64 @@ document.querySelectorAll('[data-split-lines]').forEach((el) => {
   sizeIt();
   window.addEventListener('resize', sizeIt);
 
-  // the whole field is black wireframe line-art (wodniack style) —
-  // MeshBasicMaterial needs no lights and is the cheapest possible material
-  const geos = [
-    () => new THREE.TorusKnotGeometry(0.8, 0.28, 64, 12),
-    () => new THREE.IcosahedronGeometry(0.9, 0),
-    () => new THREE.TorusGeometry(0.8, 0.32, 12, 36),
-    () => new THREE.ConeGeometry(0.8, 1.4, 5),
-    () => new THREE.BoxGeometry(1.1, 1.1, 1.1),
-    () => new THREE.OctahedronGeometry(0.95, 0),
-    () => new THREE.SphereGeometry(0.85, 20, 14),
-  ];
+  /* ---- THE star ✦ — the site's own mark, brought to 3D ----
+     one extruded four-point star (the same ✦ used in the logo, tickers
+     and ghost words) that spins, tumbles and journeys chapter to chapter.
+     No field, no extras — a single signature object. */
+  const star = new THREE.Group();
+  scene.add(star);
 
-  const group = new THREE.Group();
-  scene.add(group);
-  const meshes = [];
-  const COUNT = 20;
-  const rand = (i, salt) => ((i * salt) % 100) / 100; // deterministic pseudo-random
-
-  // the field is a tall column of shapes; scrolling travels through it
-  const SCROLL_FACTOR = 0.0032;
-
-  for (let i = 0; i < COUNT; i++) {
-    const geo = geos[i % geos.length]();
-    const mat = new THREE.MeshBasicMaterial({
-      color: 0x150307,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.25 + rand(i, 17) * 0.15, // subtle — the planet is the star
-    });
-    const m = new THREE.Mesh(geo, mat);
-
-    const side = i % 2 === 0 ? -1 : 1;
-    if (i < 6) {
-      // hero cluster — pushed to the edges so the planet owns the center-right
-      m.position.set(side * (6.5 + rand(i, 37) * 4), 4 - rand(i, 53) * 8, -5 - rand(i, 29) * 4);
-    } else {
-      // spread down the scroll column, biased to the sides for readability
-      const depth = 46;
-      m.position.set(
-        side * (3.5 + rand(i, 37) * 7.5),
-        2 - ((i - 6) / (COUNT - 6)) * depth - rand(i, 61) * 1.6,
-        -2.5 - rand(i, 29) * 5.5
-      );
-    }
-    m.scale.setScalar(0.4 + rand(i, 41) * 0.85);
-    m.userData = {
-      baseX: m.position.x,
-      baseY: m.position.y,
-      floatSpeed: 0.35 + rand(i, 53) * 0.6,
-      floatAmp: 0.35 + rand(i, 23) * 0.45,
-      rx: 0.002 + rand(i, 13) * 0.004,
-      ry: 0.003 + rand(i, 7) * 0.004,
-      phase: i * 1.7,
-    };
-    group.add(m);
-    meshes.push(m);
+  const starShape = new THREE.Shape();
+  const R = 2.7, r = 0.62;
+  for (let k = 0; k < 8; k++) {
+    const ang = Math.PI / 2 - k * (Math.PI / 4);
+    const rad = k % 2 === 0 ? R : r;
+    const x = Math.cos(ang) * rad;
+    const y = Math.sin(ang) * rad;
+    if (k === 0) starShape.moveTo(x, y);
+    else starShape.lineTo(x, y);
   }
+  starShape.closePath();
 
-  /* ---- THE planet: her brand at the center, campaigns in orbit ----
-     one wireframe globe + orbit rings + satellites that journeys around
-     the screen as the story scrolls (ref: sattwikjana.vercel.app, re-cast
-     for the red/black print theme) */
-  const planet = new THREE.Group();
-  scene.add(planet);
+  const starGeo = new THREE.ExtrudeGeometry(starShape, {
+    depth: 0.55,
+    bevelEnabled: true,
+    bevelThickness: 0.09,
+    bevelSize: 0.09,
+    bevelSegments: 2,
+  });
+  starGeo.center();
 
-  const planetMats = [];
-  const pMat = (opacity, wireframe = false) => {
-    const m = new THREE.MeshBasicMaterial({
-      color: 0x150307, wireframe, transparent: true, opacity,
-    });
-    planetMats.push(m);
-    return m;
-  };
+  // solid black body, shaded just enough to read as 3D…
+  const bodyMat = new THREE.MeshPhongMaterial({
+    color: 0x150307,
+    shininess: 26,
+    specular: 0x6a0b1d,
+  });
+  star.add(new THREE.Mesh(starGeo, bodyMat));
+  // …with crimson print-style edge lines
+  const edgeMat = new THREE.LineBasicMaterial({ color: 0xed1941, transparent: true, opacity: 0.9 });
+  star.add(new THREE.LineSegments(new THREE.EdgesGeometry(starGeo, 18), edgeMat));
 
-  // sparse segments so the globe reads as clean lat/long lines, not a scribble
-  planet.add(new THREE.Mesh(new THREE.SphereGeometry(2.3, 14, 10), pMat(0.6, true)));
+  scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+  const keyLight = new THREE.DirectionalLight(0xffffff, 0.75);
+  keyLight.position.set(4, 6, 8);
+  scene.add(keyLight);
 
-  const ring1 = new THREE.Mesh(new THREE.TorusGeometry(3.4, 0.05, 8, 96), pMat(0.95));
-  ring1.rotation.set(Math.PI / 2.15, 0.25, 0);
-  planet.add(ring1);
-  const ring2 = new THREE.Mesh(new THREE.TorusGeometry(4.1, 0.03, 8, 96), pMat(0.55));
-  ring2.rotation.set(Math.PI / 2.6, 0, 0.5);
-  planet.add(ring2);
-
-  const makeSat = (ringRot, radius, size, speed, phase) => {
-    const base = new THREE.Group();
-    base.rotation.copy(ringRot);
-    const spinner = new THREE.Group();
-    base.add(spinner);
-    const sat = new THREE.Mesh(new THREE.BoxGeometry(size, size, size), pMat(1));
-    sat.position.x = radius;
-    spinner.add(sat);
-    planet.add(base);
-    return { spinner, sat, speed, phase };
-  };
-  const sats = [
-    makeSat(ring1.rotation, 3.3, 0.24, 0.5, 0),
-    makeSat(ring1.rotation, 3.3, 0.15, 0.5, Math.PI * 0.85),
-    makeSat(ring2.rotation, 3.9, 0.18, -0.34, 1.4),
-  ];
-
-  // where the planet sits for each chapter (x flips sides down the story)
+  // where the star sits for each chapter (x flips sides down the story);
+  // c = body color, e = edge color (they swap on the black epilogue)
   const KF = [
-    { id: 'hero',    x: 5.6,  y: -1.1, z: -3.5, s: 1.6,  c: 0x150307 },
-    { id: 'about',   x: -6,   y: 0.2,  z: -4.5, s: 1.1,  c: 0x150307 },
-    { id: 'work',    x: 6.6,  y: 0.6,  z: -6,   s: 0.9,  c: 0x150307 },
-    { id: 'posts',   x: -6.4, y: -0.6, z: -5,   s: 1,    c: 0x150307 },
-    { id: 'rtm',     x: 6.2,  y: 0.4,  z: -5.5, s: 0.9,  c: 0x150307 },
-    { id: 'shelf',   x: -6.2, y: 0.8,  z: -5,   s: 1,    c: 0x150307 },
-    { id: 'hobbies', x: 6.4,  y: -0.5, z: -4.5, s: 1.1,  c: 0x150307 },
-    { id: 'contact', x: 0,    y: 0.4,  z: -2.8, s: 1.6,  c: 0xed1941 },
+    { id: 'hero',    x: 5.9,  y: -0.5, z: -3.5, s: 1.25, c: 0x150307, e: 0xed1941 },
+    { id: 'about',   x: -6,   y: 0.2,  z: -4.5, s: 0.85, c: 0x150307, e: 0xed1941 },
+    { id: 'work',    x: 6.6,  y: 0.6,  z: -6,   s: 0.7,  c: 0x150307, e: 0xed1941 },
+    { id: 'posts',   x: -6.4, y: -0.6, z: -5,   s: 0.8,  c: 0x150307, e: 0xed1941 },
+    { id: 'rtm',     x: 6.2,  y: 0.4,  z: -5.5, s: 0.7,  c: 0x150307, e: 0xed1941 },
+    { id: 'shelf',   x: -6.2, y: 0.8,  z: -5,   s: 0.8,  c: 0x150307, e: 0xed1941 },
+    { id: 'hobbies', x: 6.4,  y: -0.5, z: -4.5, s: 0.9,  c: 0x150307, e: 0xed1941 },
+    { id: 'contact', x: 0,    y: 0.4,  z: -2.8, s: 1.3,  c: 0xed1941, e: 0xf2e9dc },
   ];
   // segment i begins when section i is ~half a viewport from the top, so the
-  // planet HOLDS each chapter position and travels between chapters
+  // star HOLDS each chapter position and travels between chapters
   let kfOffsets = KF.map(() => 0);
   const computeOffsets = () => {
     kfOffsets = KF.map((k) => {
@@ -215,19 +159,20 @@ document.querySelectorAll('[data-split-lines]').forEach((el) => {
   };
   computeOffsets();
   if (window.ScrollTrigger) ScrollTrigger.addEventListener('refresh', computeOffsets);
-  window.__planetDebug = { planet: null, offsets: () => kfOffsets };
+  window.__starDebug = { star, offsets: () => kfOffsets };
 
   const colA = new THREE.Color();
   const colB = new THREE.Color();
+  const edgeA = new THREE.Color();
+  const edgeB = new THREE.Color();
   const targetPos = new THREE.Vector3();
 
   // start at the hero keyframe — no fly-in from the origin
   const initAspect = isFinite(camera.aspect) && camera.aspect > 0 ? camera.aspect : 1.6;
-  planet.position.set(KF[0].x * Math.min(1, initAspect / 1.35), KF[0].y, KF[0].z);
-  planet.scale.setScalar(KF[0].s);
-  window.__planetDebug.planet = planet;
+  star.position.set(KF[0].x * Math.min(1, initAspect / 1.35), KF[0].y, KF[0].z);
+  star.scale.setScalar(KF[0].s);
 
-  const placePlanet = (t) => {
+  const placeStar = (t) => {
     const anchor = window.scrollY;
     let i = 0;
     while (i < KF.length - 2 && anchor > kfOffsets[i + 1]) i++;
@@ -241,29 +186,29 @@ document.querySelectorAll('[data-split-lines]').forEach((el) => {
     const aspectF = Math.min(1, aspect / 1.35); // pull inward on narrow screens
     targetPos.set(
       (a.x + (b.x - a.x) * f) * aspectF + mouseX * 0.4,
-      a.y + (b.y - a.y) * f + Math.sin(t * 0.5) * 0.18,
+      a.y + (b.y - a.y) * f + Math.sin(t * 0.5) * 0.2 + mouseY * -0.2,
       a.z + (b.z - a.z) * f
     );
-    if (isFinite(planet.position.x)) planet.position.lerp(targetPos, 0.06);
-    else planet.position.copy(targetPos); // snap out of any NaN state
-    const ts = a.s + (b.s - a.s) * f;
-    planet.scale.setScalar(planet.scale.x + (ts - planet.scale.x) * 0.06);
+    if (isFinite(star.position.x)) star.position.lerp(targetPos, 0.06);
+    else star.position.copy(targetPos); // snap out of any NaN state
+    const scaleF = aspect < 1 ? 0.7 : 1; // smaller on portrait screens
+    const ts = (a.s + (b.s - a.s) * f) * scaleF;
+    star.scale.setScalar(star.scale.x + (ts - star.scale.x) * 0.06);
 
     colA.setHex(a.c).lerp(colB.setHex(b.c), f);
-    planetMats.forEach((m) => m.color.lerp(colA, 0.08));
+    bodyMat.color.lerp(colA, 0.08);
+    edgeA.setHex(a.e).lerp(edgeB.setHex(b.e), f);
+    edgeMat.color.lerp(edgeA, 0.08);
 
-    planet.rotation.y += 0.0035;
-    planet.rotation.x = Math.sin(t * 0.18) * 0.1;
-    sats.forEach((s) => {
-      s.spinner.rotation.z = t * s.speed + s.phase;
-      s.sat.rotation.x += 0.02;
-      s.sat.rotation.y += 0.015;
-    });
+    // sparkle spin, scroll-coupled, plus a slow 3D tumble that shows the depth
+    star.rotation.z = -t * 0.22 - window.scrollY * 0.0004;
+    star.rotation.y = Math.sin(t * 0.24) * 0.55;
+    star.rotation.x = Math.sin(t * 0.17) * 0.22;
   };
 
   if (prefersReduced) {
-    planet.position.set(KF[0].x, KF[0].y, KF[0].z);
-    planet.scale.setScalar(KF[0].s);
+    star.position.set(KF[0].x, KF[0].y, KF[0].z);
+    star.scale.setScalar(KF[0].s);
   }
 
   let mouseX = 0, mouseY = 0;
@@ -275,24 +220,7 @@ document.querySelectorAll('[data-split-lines]').forEach((el) => {
   const clock = new THREE.Clock();
   const render = () => {
     requestAnimationFrame(render);
-    const t = clock.getElapsedTime();
-    meshes.forEach((m) => {
-      const u = m.userData;
-      if (!prefersReduced) {
-        m.rotation.x += u.rx;
-        m.rotation.y += u.ry;
-        m.position.y = u.baseY + Math.sin(t * u.floatSpeed + u.phase) * u.floatAmp;
-        m.position.x = u.baseX + Math.cos(t * u.floatSpeed * 0.7 + u.phase) * 0.3;
-      }
-    });
-    if (!prefersReduced) {
-      group.rotation.y += (mouseX * 0.1 - group.rotation.y) * 0.04;
-      group.rotation.x += (mouseY * 0.06 - group.rotation.x) * 0.04;
-      // travel through the field as the page scrolls, slowly rolling
-      group.position.y = window.scrollY * SCROLL_FACTOR;
-      group.rotation.z = Math.sin(t * 0.08) * 0.02 + window.scrollY * 0.00005;
-      placePlanet(t);
-    }
+    if (!prefersReduced) placeStar(clock.getElapsedTime());
     renderer.render(scene, camera);
   };
   render();
